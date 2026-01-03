@@ -1,0 +1,29 @@
+Abstract:
+
+The spotted lanternfly (Lycoma Delicatula) is a plant hopper species native to East Asia, but introduced to Pennsylvania in 2014. The pest has since increased its reach to 20 more states, posing a severe threat to U.S. environment and agriculture. The estimated economic damage to Pennsylvania reaches up to 324 million in losses annually (CHECK METHODOLOGY OF STUDY). However, a similar analysis has not been conducted for Ohio thus far. As such, this exercise aims to appropriately forecast the spread of the spotted lantern fly in Ohio, will the goal of accurately forecasting when the each county will eventually have an established population, alongside the annual damages dealt to the environment, agriculture, and economy of the state if more severe actions are not taken (RECORD EFFECT OF INTERVENTION).
+
+Methods:
+
+Data - for the county level view of observations, I selected the  lyde_10k dataset (observations recorded within 10 km^2). The dataset contains approximately 17,000 recordings of 4 columns: sighting in 10 km^2 area, population established in 10 km^2 area, longitude, and latitude. The data features county and state were created via Geopy. County and state centroids were also created by aggregating county and state recordings. For agricultural and environmental information, data was collected from USDA Quickstats on the acreage and sales for fruit and tree nuts in each Ohio county (decided this was a good starting point due to completeness of data). The test set data was collected from the Ohio Department of Agriculture with information on what counties had present and established populations of SLF in 2025. All data was cleansed of null values, and only the cleaned Lyde_10k with additional features was used for modelling. 
+
+Modelling - initially proposed to be a Bayesian Hierarchical model, but shifted to a Survival Model due to the reliability of this modelling technique when working with event prediction. Current modelling Schema is a Survival Model using random forest to forecast the predicted probability of establishment for the years 2024-2043. For features, the model uses raw latitude, raw longitude, Proximity from nearest frontier of SLF establishment using exponential decay function and haversine distance, state, and year (here Bio_year).  
+
+Initial Results:
+
+The model has exceptional validation test results: AUC = 0.988 and negative log-loss = 0.046. The model also recognizes a clear risk in the true quarantined counties of 2025 with all of their cumulative probabilities of being established being greater than 0. However, the quarantine test set alignment Auc is equal to 0.47, indicating a possible inverse set of predictions from the model when compared to the real spread?
+
+
+
+
+Points of Advancement:
+
+Create county centroid map for more county specific feature engineering
+Create cargo measure as SLF can spread using cargo trucks (very important feature missing)
+Attempt Bayesian Survival Model for smoothing and accuracy benefits
+
+Sources:
+
+De Bona S, Barringer L, Kurtz P, Losiewicz J, Parra GR, Helmus MR (2023) lydemapr: an R package to track the spread of the invasive spotted lanternfly (Lycorma delicatula, White 1845) (Hemiptera, Fulgoridae) in the United States. NeoBiota 86: 151-168. https://doi.org/10.3897/neobiota.86.101471
+U.S. Department of Agriculture. (2025). FoodData Central. U.S. Department of Agriculture. https://www.aphis.usda.gov/plant-pests-diseases/slf 
+https://www.northeastipm.org/about-us/publications/ipm-insights/penn-state-extension-releases-spotted-lanternfly-management-guide/ 
+
